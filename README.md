@@ -99,6 +99,8 @@ kubectl port-forward --namespace minio-deep-storage svc/minio 9000:9000
 
 Now you can configure your data lake locally at port 9000 to use later with the Airflow orchestration.
 
+![minio](imgs/minio.png)
+
 ### Spark
 
 Configuring a Spark On K8s Operator to run.
