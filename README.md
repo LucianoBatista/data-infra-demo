@@ -79,10 +79,10 @@ $ helm install minio bitnami/minio --namespace minio-deep-storage
 Get login credentials
 
 ```bash
-export ACCESS_KEY=$(kubectl get secret --namespace minio-deep-storage minio -o jsonpath="{.data.access-key}" | base64 --decode)
-export SECRET_KEY=$(kubectl get secret --namespace minio-deep-storage minio -o jsonpath="{.data.secret-key}" | base64 --decode)
-echo $ACCESS_KEY
-echo $SECRET_KEY
+$ export ACCESS_KEY=$(kubectl get secret --namespace minio-deep-storage minio -o jsonpath="{.data.access-key}" | base64 --decode)
+$ export SECRET_KEY=$(kubectl get secret --namespace minio-deep-storage minio -o jsonpath="{.data.secret-key}" | base64 --decode)
+$ echo $ACCESS_KEY
+$ echo $SECRET_KEY
 ```
 
 Building a Data Lake with MinIO.
