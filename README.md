@@ -11,6 +11,13 @@ You'll need to have the following tools installed to run this example.
 - **kubens** and **kubectx** CLI: https://github.com/ahmetb/kubectx
 
 
+## Goal
+
+The objective of this project is to build the following infra-structure to allow you to **process and visualize big data**. And also keep everything **orchestrated by Airflow**.
+
+![big-data-infra](imgs/data-infra-demo.png)
+
+
 ## Creating the environment
 
 ### Create the cluster

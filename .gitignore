@@ -1,0 +1,4 @@
+03_spark/files/*.json
+03_spark/crb-spark-operator-airflow-orchestrator.yaml
+03_spark/crb-spark-operator-airflow-processing.yaml
+03_spark/pr-elt-business/readme.md
