@@ -13,7 +13,7 @@ You'll need to have the following tools installed to run this example.
 
 ## Goal
 
-The objective of this project is to build the following infra-structure to allow you to **process and visualize big data**. And also keep everything **orchestrated by Airflow**.
+The objective of this project is to build the following infra-structure using k8s to allow you to **process and visualize big data**. And also keep everything **orchestrated by Airflow**.
 
 ![big-data-infra](imgs/data-infra-demo.png)
 
