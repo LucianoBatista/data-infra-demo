@@ -2,13 +2,6 @@
 from pyspark.sql import SparkSession
 from pyspark import SparkContext, SparkConf
 
-# data processing using a data lake
-# blob storage = azure
-# s3 = amazon
-# gcs = google
-# minio = k8s
-# hdfs = hadoop
-
 # set config
 conf = (
 SparkConf()

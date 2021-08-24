@@ -108,19 +108,79 @@ Now you can configure your data lake locally at port 9000 to use later with the 
 
 ![minio](imgs/minio.png)
 
+
 ### Spark
 
-Configuring a Spark On K8s Operator to run.
+We'll be using Spark On K8s operator here. This is a very simple way to submit a spark job to be executed on k8s.
+
+The first thing you need is a spark job wroted in your preference language, I'll be use the python implementation called PySpark. You can find the job on this directory:
+
+```sh
+$ cd 03_spark/pr-elt-business/
+```
+
+And the file have the following name `pr-elt-business.py`.
+
+Change this line to the IP inside of your minio namespace:
+
+```python
+.set("spark.hadoop.fs.s3a.endpoint", "http://10.244.3.5:9000")
+```
+
+You can find the IP address looking with the following command:
+
+```sh
+$ kubectl kubens minio-deep-storage
+$ kubectl get pods
+$ kubectl describe pod/<MinioPodName>
+```
+
+Now we need to send an image to the docker-hub with our containerized spark job. For that, you need to build the and push to some repository.
+
+```sh
+$ docker login
+$ cd 03_spark/
+$ docker build . -t big-data-infra-use-case:1.0.0
+$ docker tag big-data-infra-use-case:1.0.0 yourRepo/big-data-infra-use-case:1.0.0
+
+# push image to registry
+docker push owshq/owshq-pr-elt-business:3.0.0
+```
+
+Now that we have all set, we can finally install the spark operator.
+
+```sh
+helm repo update
+helm install spark spark-operator/spark-operator --namespace spark-operator
+helm ls -n spark-operator
+```
+
+After your deployment has fineshed, you'll need to grant access for the Spark on the cluster running the following lines:
+
+```sh
+kubectl create serviceaccount spark
+kubectl create clusterrolebinding spark-role --clusterrole=edit --serviceaccount=default:spark --namespace=default
+```
+
+Now you're all set to send spark jobs to process on the cluster. The way how this goes is by running a yaml file with the job specs, the Spark will look what need to be processed and scale the executors.
+
+```sh
+kubectl apply -f 03_spark/dags/pr-elt-business.yaml -n spark-operator
+```
+
+After this process you'll have some parquet files on the minio storage.
 
 
 ### Pinot
 
-Building an OLAP datastore.
+Building an OLAP datastore. (online setup, port-forward controller:900 and broker:8099)
+
+pinot://127.0.0.1:8099/query/sql?controller=http://127.0.0.1:9000/
 
 
 ### Superset
 
-Building a data viz tool.
+Building a data viz tool. (online setup, port-forward UI 8088), personalized values.yaml on 05_superset.
 
 
 ## Airflow
