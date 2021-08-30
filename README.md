@@ -92,12 +92,6 @@ $ echo $ACCESS_KEY
 $ echo $SECRET_KEY
 ```
 
-Building a Data Lake with MinIO.
-
-```bash
-$ helm install minio bitnami/minio --namespace minio-deep-storage
-```
-
 After all pods are running, port-forward your storage:
 
 ```bash
@@ -171,18 +165,57 @@ kubectl apply -f 03_spark/dags/pr-elt-business.yaml -n spark-operator
 After this process you'll have some parquet files on the minio storage.
 
 
+### Airflow
+
+First thing is to create an airflow namespace like the other steps.
+
+```sh
+kubectl create namespace airflow
+kubens airflow
+```
+
+```shell
+helm repo add apache-airflow https://airflow.apache.org
+helm repo update
+helm install airflow apache-airflow/airflow --namespace airflow
+```
+
+You can access the UI with the port-forward command:
+
+```shell
+kubectl port-forward svc/airflow-webserver 8080:8080
+```
+
+We'll personalize the installation using a specific kind of executor that has a better interaction with kubernets, the `KubernetesExecutor`.
+
+For that, first generate the values.yaml with the configuration values.
+
+```shell
+mkdir 06_airflow
+helm show values apache-airflow/airflow > 06_airflow/values.yaml
+```
+
+Open the file generate and look for executor value, and change to `KubernetesExecutor`. Now we need upgrade our airflow installation.
+
+```shell
+helm upgrade --install airflow apache-airflow/airflow -n airflow -f values.yaml --debug
+```
+
+Verify the revision number to see if the upgrade was applied.
+
+```shell
+helm ls -n airflow
+
+NAME   	NAMESPACE	REVISION	UPDATED                                	STATUS  	CHART        	APP VERSION
+airflow	airflow  	2       	2021-08-29 09:24:42.938365959 -0300 -03	deployed	airflow-1.1.0	2.1.2      
+```
+
+## TODO:
+
+Next steps we'll add Pinot and Superset to create real-time reports.
+
 ### Pinot
-
-Building an OLAP datastore. (online setup, port-forward controller:900 and broker:8099)
-
-pinot://127.0.0.1:8099/query/sql?controller=http://127.0.0.1:9000/
-
+...
 
 ### Superset
-
-Building a data viz tool. (online setup, port-forward UI 8088), personalized values.yaml on 05_superset.
-
-
-## Airflow
-
-Creating an orquestration with Airflow to move the data between those steps.
+...

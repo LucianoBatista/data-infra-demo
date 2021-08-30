@@ -5,9 +5,9 @@ from pyspark import SparkContext, SparkConf
 # set config
 conf = (
 SparkConf()
-    .set("spark.hadoop.fs.s3a.endpoint", "http://10.244.3.5:9000")
-    .set("spark.hadoop.fs.s3a.access.key", "r4mMDpXhAE")
-    .set("spark.hadoop.fs.s3a.secret.key", "ovyQLvF0Le9LlfKXw6sGFfMpvBdzsimTEeuScg4S")
+    .set("spark.hadoop.fs.s3a.endpoint", "http://10.244.3.3:9000")
+    .set("spark.hadoop.fs.s3a.access.key", "UnUmkRMnMp")
+    .set("spark.hadoop.fs.s3a.secret.key", "ILVNkWb92KFsAIHUiDIqzlOjvYRY6WiwrcKhzA7z")
     .set("spark.hadoop.fs.s3a.path.style.access", True)
     .set("spark.hadoop.fs.s3a.fast.upload", True)
     .set("spark.hadoop.fs.s3a.connection.maximum", 100)
@@ -59,7 +59,7 @@ if __name__ == '__main__':
 
     # save into delta format
     # curated zone
-    df_business_sql.write.format("delta").mode("overwrite").save("s3a://delta/business/")
+    df_business_sql.write.format("delta").mode("overwrite").save("s3a://curated/business/")
 
     # stop spark session
     spark.stop()

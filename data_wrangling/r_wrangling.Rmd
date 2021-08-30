@@ -1,0 +1,109 @@
+---
+author: "Luba"
+title: "wrangling"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Libs
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(skimr)
+```
+
+# Data dictionary
+
+## Categorical variables
+
+Without missing values!
+
+What is trail and sectors?
+
+We have different **trails** and each Trail have description, name and id. But I don't understand what is this **trail_thread_name/id.**
+- Avaliação da Aprendizagem Escolar (trail_name):
+  - FOCOS Cursos (trail_thread_name)? This is the where that trail was applied?
+
+Sectors are more intuitive, they follow this structure:
+
+- Modulo 1 (sector_name):
+  - Modulo 1: Aula 1 (sector_item_name). Here is normally where you'll find the indication of some activity, called of exam here.
+
+client_id: Just one client ("SAS - Focos"), is who're using the service.
+client_name: String indication of the client
+trail_*: Explained before
+sector_*: Explained before
+username: The user accessing the trails and sectors
+email: just the personal email of the user
+class_name: in case we have student using the platform
+status: this is the status of the sector_item? Like: If a finished or not the *Aula 1: Organelas*
+
+
+## Numerical Variables
+
+- *_ids: Some identification of was showed before
+- exam_id: Id of the specific exam applied on the LMS
+- year: just the year
+- weight: weight of some exame.
+  - 4 items, 1 point for each item, final weight equal to 4.
+  - 6 items, 3 points for each item, final weight equal to 18
+- grade: is how much he/she scored on the test, based on the weight value.
+- score: Seems the final score for the user on that exam, based on the got corrected items percentage.
+  - 5 items, 1 point each, you got 4 of them correct: 8 is your final score.
+- qt_questoes: how many items do we have on that exam. Normally this variable is related to the weight.
+  - 6 items, weight 6.
+  - 12 items, weight 6. Probably we have each item with 2 points.
+
+
+## POSIXct
+
+- created_at: To show a timeline of users interaction.
+
+
+# Questions
+
+- Do we'll have data about the user interaction with the platform?
+  - time spent on the item
+  - how much time to answer the item
+  - how much time in each sector or trail
+
+- We'll have the answer by item?
+  - Do we need to look for the exam_id and find the answers by item?
+- What happens if the teacher want to put different weights for different items?
+
+# Hypothesis
+
+- How the users are doing on the LMS trails?
+- Grade by trails
+- Grade by sectors
+- Grade by thread trails
+- Who more are using the LMS and how he/she is performing on the platform?
+- Timeline
+
+# Knowing the data
+
+```{r}
+lms_tbl <- read_csv("../data/query_result_2021-08-28T08_00_17.45991Z.csv") %>% clean_names() %>% mutate(client_id = client_id %>% as_factor())
+
+lms_tbl %>% tail() %>% glimpse()
+
+skim(lms_tbl)
+
+# passing some variables to factors
+lms_tbl %>% 
+  select(grade, score, exam_id, sector_description, created_at) %>% 
+  mutate(m = month(created_at)) %>% 
+  count(m)
+  
+
+
+```
+
+
+# TODOs
+
+- remove test users and test activities. Or look for test words in columns!
+- answer those hypothesis questions and save the output.
